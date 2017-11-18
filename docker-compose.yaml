@@ -1,0 +1,28 @@
+version: "3"
+services:
+  server:
+    image: node:8
+    command: "npm start"
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      PORT: 8000
+      DEBUG: "*"
+    ports:
+      - 8000:8000
+    links:
+      - postgres:postgres.local
+      - redis:redis.local
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: user
+      POSTGRES_DB: vox
+  redis:
+    image: redis
