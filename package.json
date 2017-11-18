@@ -1,16 +1,21 @@
 {
-   "name": "vox",
+   "name": "blind-bard",
    "version": "1.0.0",
    "description": "",
+   "private": true,
    "main": "index.js",
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
       "scrape": "ts-node src/scrape.ts",
       "start": "ts-node src/index.ts"
    },
+   "repository": "https://github.com/nickclaw/blind-bard",
+   "bugs": {
+      "url": "http://github.com/nickclaw/blind-bard/issues"
+   },
    "keywords": [],
-   "author": "",
-   "license": "ISC",
+   "author": "Nicholas Clawson <nickclaw@gmail.com> (nickclaw.com)",
+   "license": "MIT",
    "dependencies": {
       "apollo-server-express": "^1.2.0",
       "bluebird": "^3.5.1",
