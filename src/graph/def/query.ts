@@ -42,6 +42,18 @@ export default new GraphQLObjectType({
       },
     }),
 
+    searchBooks: paginate({
+      srcName: 'SearchQuery',
+      destType: BookType,
+      args: {
+        query: { type: t.requiredString },
+      },
+      async resolve(_, { limit, offset, query }) {
+        const books = await Book.search({ limit, offset, query });
+        return books.map(book => book.toJSON());
+      }
+    }),
+
     /**
      * Get a single author by id
      */

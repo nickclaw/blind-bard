@@ -1,4 +1,4 @@
-import { Model, RelationMappings } from 'objection';
+import { Model, RelationMappings, raw } from 'objection';
 import { Author } from './author';
 import { Genre } from './genre';
 
@@ -34,6 +34,20 @@ export class Book extends Model {
       }
     },
   };
+
+  static async search(opts: {
+    query: string,
+    limit: number,
+    offset: number,
+  }): Promise<Book[]> {
+    return await Book.query()
+      .limit(opts.limit)
+      .offset(opts.offset)
+      .where(raw(
+        "to_tsvector('english', title) @@ to_tsquery('english', '??')",
+        [opts.query]
+      ));
+  }
 
   readonly id: number;
   identifier: number;
