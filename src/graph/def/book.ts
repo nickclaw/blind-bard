@@ -1,9 +1,6 @@
-import {
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLString,
-  GraphQLNonNull,
-} from 'graphql';
+import { GraphQLObjectType } from 'graphql';
+
+import * as t from '../util/types';
 import paginate from '../util/slice';
 import { Book } from '../../entity/book';
 import { Author } from '../../entity/author';
@@ -13,9 +10,9 @@ import GenreType from './genre';
 export default new GraphQLObjectType({
   name: 'Book',
   fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLInt) },
-    identifier: { type: new GraphQLNonNull(GraphQLInt) },
-    title: { type: new GraphQLNonNull(GraphQLString) },
+    id: { type: t.requiredInt },
+    identifier: { type: t.requiredInt },
+    title: { type: t.requiredString },
 
     authors: paginate({
       srcName: 'Book',

@@ -1,9 +1,6 @@
-import {
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLNonNull,
-} from 'graphql';
+import { GraphQLObjectType } from 'graphql';
 
+import * as t from '../util/types';
 import paginate from '../util/slice';
 import { Book } from '../../entity/book';
 import { Genre } from '../../entity/genre';
@@ -23,7 +20,7 @@ export default new GraphQLObjectType({
     book: {
       type: BookType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLInt) },
+        id: { type: t.requiredInt },
       },
       async resolve(_, { id }) {
         return await Book.query().findById(id);
@@ -51,7 +48,7 @@ export default new GraphQLObjectType({
     author: {
       type: AuthorType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLInt) },
+        id: { type: t.requiredInt },
       },
       async resolve(_, { id }) {
         return await Author.query().findById(id);
@@ -79,7 +76,7 @@ export default new GraphQLObjectType({
     genre: {
       type: GenreType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLInt) },
+        id: { type: t.requiredInt },
       },
       async resolve(_, { id }) {
         return await Genre.query().findById(id);
