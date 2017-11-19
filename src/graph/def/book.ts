@@ -13,6 +13,9 @@ export default new GraphQLObjectType({
     id: { type: t.requiredInt },
     identifier: { type: t.requiredInt },
     title: { type: t.requiredString },
+    description: { type: t.string },
+    language: { type: t.requiredString },
+    duration: { type: t.requiredInt },
 
     authors: paginate({
       srcName: 'Book',
