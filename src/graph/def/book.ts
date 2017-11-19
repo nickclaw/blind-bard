@@ -1,38 +1,48 @@
-import { declareSlice, applySlice, resolveSlice, } from '../util/slice';
+import {
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLString,
+  GraphQLNonNull,
+} from 'graphql';
+import paginate from '../util/slice';
 import { Book } from '../../entity/book';
 import { Author } from '../../entity/author';
+import AuthorType from './author';
+import GenreType from './genre';
 
-export const def = `
-  ${declareSlice('Book', 'Author')}
-  ${declareSlice('Book', 'Genre')}
+export default new GraphQLObjectType({
+  name: 'Book',
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    identifier: { type: new GraphQLNonNull(GraphQLInt) },
+    title: { type: new GraphQLNonNull(GraphQLString) },
 
-  type Book {
-    id: Int!
-    identifier: Int!
-    title: String!
-    description: String
-    language: String!
-    duration: Int!
-    ${applySlice('authors', 'Book', 'Author')}
-    ${applySlice('genres', 'Book', 'Genre')}
-  }
-`;
+    authors: paginate({
+      srcName: 'Book',
+      destType: AuthorType,
+      async resolve(book, { offset, limit }) {
+        const entity = Book.fromJson(book);
+        const authors = await entity
+          .$relatedQuery('authors')
+          .limit(limit)
+          .offset(offset);
 
-console.log(def);
-
-export const resolver = {
-  Book: {
-    authors: resolveSlice(async (book: any, args: any) => {
-      const entity = Book.fromJson(book);
-      const authors = await entity
-        .$relatedQuery('authors')
-        .limit(args.limit)
-        .offset(args.offset);
-
-      return authors.map(obj => obj.toJSON());
+        return authors.map(obj => obj.toJSON());
+      },
     }),
-    genres: resolveSlice(async () => {
-      return [];
+
+    genres: paginate({
+      srcName: 'Book',
+      destType: GenreType,
+      async resolve(book, { offset, limit }) {
+        const entity = Book.fromJson(book);
+        const genres = await entity
+          .$relatedQuery('genres')
+          .limit(limit)
+          .offset(offset);
+
+        return genres.map(obj => obj.toJSON());
+      }
     }),
-  },
-};
+  }),
+});

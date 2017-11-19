@@ -1,13 +1,33 @@
-import { Book } from '../../entity/book';
+import {
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLString,
+  GraphQLNonNull,
+} from 'graphql';
+import paginate from '../util/slice';
 
-export const def = `
-  type Genre {
-    id: Int!
-    identifier: Int!
-    name: String!
-  }
-`;
+import { Genre } from '../../entity/genre';
+import BookType from './book';
 
-export const resolver = {
+export default new GraphQLObjectType({
+  name: 'Genre',
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    identifier: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
 
-};
+    books: paginate({
+      srcName: 'Genre',
+      destType: BookType,
+      async resolve(genre, { limit, offset }) {
+        const entity = Genre.fromJson(genre);
+        const books = await entity
+          .$relatedQuery('books')
+          .limit(limit)
+          .offset(offset);
+
+        return books.map(obj => obj.toJSON());
+      },
+    }),
+  }),
+});
